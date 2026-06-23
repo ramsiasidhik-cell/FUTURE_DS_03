@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Funnel & Conversion Performance Analysis — Ramsia Sidhik</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: #f0ede8; color: #1a1a1a; min-height: 100vh; }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+  .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #ddd9d3; }
+  .header-left {}
+  .eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; color: #a0795a; text-transform: uppercase; margin-bottom: 8px; }
+  .title { font-size: 26px; font-weight: 600; color: #1a1a1a; line-height: 1.2; margin-bottom: 6px; }
+  .byline { font-size: 13px; color: #888; }
+  .header-right { text-align: right; }
+  .dataset-tag { display: inline-block; background: #fff; border: 0.5px solid #ddd; border-radius: 20px; padding: 6px 14px; font-size: 11px; color: #666; }
+
+  .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .metric { background: #fff; border-radius: 14px; padding: 1.25rem 1.5rem; border: 0.5px solid #e8e4de; position: relative; overflow: hidden; }
+  .metric::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); border-radius: 14px 14px 0 0; }
+  .metric.blue { --accent: #378ADD; }
+  .metric.green { --accent: #1D9E75; }
+  .metric.amber { --accent: #EF9F27; }
+  .metric.red { --accent: #D85A30; }
+  .metric-label { font-size: 11px; font-weight: 500; color: #999; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .metric-value { font-size: 28px; font-weight: 600; color: #1a1a1a; line-height: 1; }
+
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .card { background: #fff; border-radius: 14px; padding: 1.25rem 1.5rem; border: 0.5px solid #e8e4de; }
+  .card-header { margin-bottom: 1rem; }
+  .card-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 3px; }
+  .card-sub { font-size: 11px; color: #aaa; }
+  .chart-wrap { position: relative; height: 195px; }
+
+  .recs-card { background: #fff; border-radius: 14px; padding: 1.25rem 1.5rem; border: 0.5px solid #e8e4de; margin-bottom: 1.5rem; }
+  .recs-title { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 1rem; }
+  .recs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .rec { background: #f7f5f2; border-radius: 10px; padding: 14px 16px; border-left: 3px solid var(--rc); }
+  .rec.r1 { --rc: #378ADD; }
+  .rec.r2 { --rc: #1D9E75; }
+  .rec.r3 { --rc: #a0795a; }
+  .rec-num { font-size: 10px; font-weight: 600; color: var(--rc); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
+  .rec-title { font-size: 12px; font-weight: 600; color: #1a1a1a; margin-bottom: 5px; }
+  .rec-body { font-size: 11px; color: #777; line-height: 1.6; }
+
+  .footer { display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid #ddd9d3; }
+  .footer-left { font-size: 11px; color: #bbb; }
+  .footer-right { font-size: 11px; color: #bbb; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="eyebrow">Future Interns · Data Science & Analytics · Task 3</div>
+      <div class="title">Marketing funnel & conversion<br>performance analysis</div>
+      <div class="byline">Ramsia Sidhik · 2026</div>
+    </div>
+    <div class="header-right">
+      <div class="dataset-tag">Bank Marketing Dataset · UCI Machine Learning Repository</div>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric blue">
+      <div class="metric-label">Total contacted</div>
+      <div class="metric-value">45,211</div>
+    </div>
+    <div class="metric green">
+      <div class="metric-label">Converted</div>
+      <div class="metric-value">5,289</div>
+    </div>
+    <div class="metric amber">
+      <div class="metric-label">Conversion rate</div>
+      <div class="metric-value">11.70%</div>
+    </div>
+    <div class="metric red">
+      <div class="metric-label">Drop-off rate</div>
+      <div class="metric-value">88.30%</div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Funnel overview</div>
+        <div class="card-sub">Contact → re-engaged → converted</div>
+      </div>
+      <div class="chart-wrap"><canvas id="funnelChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Conversion by channel</div>
+        <div class="card-sub">Cellular outperforms all other channels</div>
+      </div>
+      <div class="chart-wrap"><canvas id="channelChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Conversion by month</div>
+        <div class="card-sub">March peaks at 51% — avoid May through August</div>
+      </div>
+      <div class="chart-wrap"><canvas id="monthChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Conversion by job segment</div>
+        <div class="card-sub">Students convert at nearly 3× the average rate</div>
+      </div>
+      <div class="chart-wrap"><canvas id="jobChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="recs-card">
+    <div class="recs-title">Key recommendations</div>
+    <div class="recs">
+      <div class="rec r1">
+        <div class="rec-num">01 · Channel</div>
+        <div class="rec-title">Prioritise cellular outreach</div>
+        <div class="rec-body">Cellular converts at 14.9% vs only 4.1% for unknown contacts. Shift campaign budget toward cellular to maximise ROI.</div>
+      </div>
+      <div class="rec r2">
+        <div class="rec-num">02 · Timing</div>
+        <div class="rec-title">Focus on March and Q4</div>
+        <div class="rec-body">March (51%), September, October and December (44–47%) far outperform summer months. Reduce May–August spend.</div>
+      </div>
+      <div class="rec r3">
+        <div class="rec-num">03 · Segments</div>
+        <div class="rec-title">Target students and retirees</div>
+        <div class="rec-body">Students convert at 29% and retirees at 23% — both nearly double the 11.7% average. Blue-collar workers convert at only 8%.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">Marketing Funnel & Conversion Performance Analysis · Ramsia Sidhik · Future Interns 2026</div>
+    <div class="footer-right">Dataset: UCI Machine Learning Repository — Bank Marketing Campaign</div>
+  </div>
+
+</div>
+
+<script>
+const tc = '#999';
+const gc = 'rgba(0,0,0,0.05)';
+const baseOpts = (indexAxis) => ({
+  responsive: true,
+  maintainAspectRatio: false,
+  indexAxis: indexAxis || 'x',
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { ticks: { color: tc, font: { size: 10, family: 'Inter' } }, grid: { color: gc }, border: { display: false } },
+    y: { ticks: { color: tc, font: { size: 10, family: 'Inter' } }, grid: { color: gc }, border: { display: false } }
+  }
+});
+
+new Chart(document.getElementById('funnelChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Total contacted', 'Previously contacted', 'Converted'],
+    datasets: [{ data: [45211, 8257, 5289], backgroundColor: ['#378ADD','#EF9F27','#1D9E75'], borderRadius: 6, borderSkipped: false }]
+  },
+  options: { ...baseOpts('y'), scales: {
+    x: { ticks: { color: tc, font: { size: 10 }, callback: v => v.toLocaleString() }, grid: { color: gc }, border: { display: false } },
+    y: { ticks: { color: tc, font: { size: 10 } }, grid: { color: gc }, border: { display: false } }
+  }}
+});
+
+new Chart(document.getElementById('channelChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Cellular', 'Telephone', 'Unknown'],
+    datasets: [{ data: [14.9, 13.4, 4.1], backgroundColor: ['#378ADD','#85B7EB','#c8dcf2'], borderRadius: 6, borderSkipped: false }]
+  },
+  options: { ...baseOpts(), scales: {
+    x: { ticks: { color: tc, font: { size: 10 } }, grid: { color: gc }, border: { display: false } },
+    y: { ticks: { color: tc, font: { size: 10 }, callback: v => v + '%' }, grid: { color: gc }, border: { display: false }, max: 20 }
+  }}
+});
+
+new Chart(document.getElementById('monthChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    datasets: [{
+      data: [10.2,16.2,51.1,19.7,6.2,9.9,9.8,10.7,46.7,43.8,10.1,46.7],
+      backgroundColor: ['#85B7EB','#85B7EB','#1D9E75','#378ADD','#D85A30','#D85A30','#D85A30','#85B7EB','#1D9E75','#1D9E75','#85B7EB','#1D9E75'],
+      borderRadius: 6, borderSkipped: false
+    }]
+  },
+  options: { ...baseOpts(), scales: {
+    x: { ticks: { color: tc, font: { size: 9 }, autoSkip: false, maxRotation: 0 }, grid: { color: gc }, border: { display: false } },
+    y: { ticks: { color: tc, font: { size: 10 }, callback: v => v + '%' }, grid: { color: gc }, border: { display: false } }
+  }}
+});
+
+new Chart(document.getElementById('jobChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Student','Retired','Unempl.','Mgmt','Admin','Self-emp','Unknown','Tech','Services','Housemaid','Entrepr.','Blue-col'],
+    datasets: [{
+      data: [28.7,22.9,15.4,13.7,12.1,11.8,11.6,11.1,10.9,9.2,9.1,7.9],
+      backgroundColor: ['#1D9E75','#1D9E75','#378ADD','#378ADD','#378ADD','#378ADD','#378ADD','#378ADD','#378ADD','#85B7EB','#85B7EB','#D85A30'],
+      borderRadius: 6, borderSkipped: false
+    }]
+  },
+  options: { ...baseOpts(), scales: {
+    x: { ticks: { color: tc, font: { size: 8 }, autoSkip: false, maxRotation: 40 }, grid: { color: gc }, border: { display: false } },
+    y: { ticks: { color: tc, font: { size: 10 }, callback: v => v + '%' }, grid: { color: gc }, border: { display: false } }
+  }}
+});
+</script>
+</body>
+</html>
